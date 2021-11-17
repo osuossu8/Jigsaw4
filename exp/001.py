@@ -1,13 +1,4 @@
 # ====================================================
-# Directory settings
-# ====================================================
-import os
-
-OUTPUT_DIR = f'output/{CFG.EXP_ID}/'
-if not os.path.exists(OUTPUT_DIR):
-    os.makedirs(OUTPUT_DIR)
-
-# ====================================================
 # Library
 # ====================================================
 import os
@@ -59,15 +50,25 @@ class CFG:
     N_FOLDS = 5
     LR = 2e-5
     max_len = 256
-    train_bs = 16 
-    valid_bs = 32
-    log_interval = 10
+    train_bs = 16 * 2
+    valid_bs = 32 * 2
+    log_interval = 100
     model_name = 'roberta-base'
     EARLY_STOPPING = True
     DEBUG = False # True
     margin = 0.5
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    
+ 
+
+# ====================================================
+# Directory settings
+# ====================================================
+import os
+
+OUTPUT_DIR = f'output/{CFG.EXP_ID}/'
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
+   
     
 def set_seed(seed=42):
     random.seed(seed)
