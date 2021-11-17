@@ -134,11 +134,11 @@ class MetricMeter(object):
 # ====================================================
 # Data Loading
 # ====================================================
-train = pd.read_csv('../input/validation_data.csv')
+train = pd.read_csv('input/validation_data.csv')
 if CFG.DEBUG:
     train = train.sample(n=100, random_state=CFG.seed).reset_index(drop=True)
-test = pd.read_csv('../input/comments_to_score.csv')
-submission = pd.read_csv('../input/sample_submission.csv')
+test = pd.read_csv('input/comments_to_score.csv')
+submission = pd.read_csv('input/sample_submission.csv')
 print(train.shape)
 print(test.shape, submission.shape)
 display(train.head())
@@ -321,7 +321,7 @@ def calc_cv(model_paths):
         model.eval()
         models.append(model)
      
-    df = pd.read_csv("train_folds.csv")
+    df = pd.read_csv("input/train_folds.csv")
 
     y_more = []
     y_less = []
