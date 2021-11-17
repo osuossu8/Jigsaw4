@@ -141,9 +141,6 @@ test = pd.read_csv('input/comments_to_score.csv')
 submission = pd.read_csv('input/sample_submission.csv')
 print(train.shape)
 print(test.shape, submission.shape)
-display(train.head())
-display(test.head())
-display(submission.head())
 
 
 # ====================================================
@@ -153,7 +150,6 @@ Fold = GroupKFold(n_splits=CFG.N_FOLDS)
 for n, (trn_index, val_index) in enumerate(Fold.split(train, train, train['worker'])):
     train.loc[val_index, 'kfold'] = int(n)
 train['kfold'] = train['kfold'].astype(int)
-display(train.groupby('kfold').size())
 
 
 train.to_csv('input/train_folds.csv', index=False)
