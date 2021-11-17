@@ -3,7 +3,7 @@
 # ====================================================
 import os
 
-OUTPUT_DIR = './'
+OUTPUT_DIR = f'output/{CFG.EXP_ID}/'
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
 
