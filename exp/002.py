@@ -247,7 +247,7 @@ def train_fn(model, data_loader, device, optimizer, scheduler):
     model.train()
     losses = AverageMeter()
     scores = MetricMeter()
-    tk0 = tqdm(train_data_loader, total=len(train_data_loader))
+    tk0 = tqdm(data_loader, total=len(data_loader))
     
     for batch_idx, data in enumerate(tk0):
         optimizer.zero_grad()
