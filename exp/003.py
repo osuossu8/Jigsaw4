@@ -430,7 +430,6 @@ for fold in range(5):
         train_avg, train_loss, valid_avg, valid_loss, best_score = train_fn(epoch, model, train_dataloader, valid_dataloader, device, optimizer, scheduler, best_score)
         # train_avg, train_loss = train_fn(model, train_dataloader, device, optimizer, scheduler)
         valid_avg, valid_loss = valid_fn(model, valid_dataloader, device)
-        scheduler.step()
 
         elapsed = time.time() - start_time
         
