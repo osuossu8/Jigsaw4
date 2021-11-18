@@ -223,8 +223,7 @@ class RoBERTaBase(nn.Module):
         super(RoBERTaBase, self).__init__()
         self.in_features = 768
         self.roberta = AutoModel.from_pretrained(model_path)
-        self.head = AttentionHead(self.in_features,self.in_features,1)
-        self.dropout = nn.Dropout(0.1)
+        self.dropout = nn.Dropout(0.2)
         self.l0 = nn.Linear(self.in_features, 1)
 
     def forward(self, ids, mask):
@@ -232,7 +231,7 @@ class RoBERTaBase(nn.Module):
             ids,
             attention_mask=mask
         )
-        x = self.head(roberta_outputs[0]) # bs, 768
+        x = roberta_outputs[1]
         logits = self.l0(self.dropout(x))
         return logits.squeeze(-1)
 
