@@ -421,7 +421,7 @@ for fold in range(5):
         logger.info(f'Epoch {epoch+1} - avg_train_loss: {train_loss:.5f}  avg_val_loss: {valid_loss:.5f}  time: {elapsed:.0f}s')
         logger.info(f"Epoch {epoch+1} - train_score:{train_avg['score']:0.5f}  valid_score:{valid_avg['score']:0.5f}")
 
-        if valid_avg['score'] < best_score:
+        if valid_avg['score'] > best_score:
             logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
             torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
             best_score = valid_avg['score']
