@@ -159,7 +159,7 @@ train['more_id'] = train['more_toxic'].map(text2id)
 len_ids = len(text2id)
 idarr = np.zeros((len_ids,len_ids), dtype=bool)
 
-for lid, mid in df[['less_id', 'more_id']].values:
+for lid, mid in train[['less_id', 'more_id']].values:
     min_id = min(lid, mid)
     max_id = max(lid, mid)
     idarr[max_id, min_id] = True
