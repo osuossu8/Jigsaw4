@@ -53,7 +53,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 50
+    log_interval = 500 # 50
     model_name = 'roberta-base'
     EARLY_STOPPING = True
     DEBUG = False # True
