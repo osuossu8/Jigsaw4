@@ -54,7 +54,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 1000
+    log_interval = 3000
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = True
@@ -273,7 +273,7 @@ def train_fn(epoch, model, train_data_loader, valid_data_loader, device, optimiz
 
             logger.info(f"Epoch {epoch+1}, Step {batch_idx} - valid_score:{valid_avg['score']:0.5f}")
 
-            if valid_avg['score'] > best_score:
+            if valid_avg['score'] < best_score:
                 logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
                 torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
                 best_score = valid_avg['score']
