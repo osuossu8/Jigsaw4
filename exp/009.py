@@ -46,7 +46,7 @@ class CFG:
     ######################
     EXP_ID = '009'
     seed = 71
-    epochs = 3
+    epochs = 1 # 3
     folds = [0, 1, 2, 3, 4]
     N_FOLDS = 5
     LR = 1e-4 # 2e-5
@@ -54,7 +54,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 500
+    log_interval = 1000
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = True
