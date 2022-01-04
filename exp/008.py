@@ -223,7 +223,7 @@ class RoBERTaBase(nn.Module):
     def __init__(self, model_path):
         super(RoBERTaBase, self).__init__()
         self.in_features = 768
-        self.roberta = AutoModel.from_pretrained(model_path)
+        self.roberta = AutoModel.from_pretrained(model_path, return_dict=False)
         self.layer_norm = nn.LayerNorm(768)
         self.dropout = nn.Dropout(0.2)
         self.dense = nn.Sequential(
@@ -234,11 +234,10 @@ class RoBERTaBase(nn.Module):
         )
 
     def forward(self, ids, mask):
-        roberta_outputs = self.roberta(
+        _, pooled_output = self.roberta(
             ids,
             attention_mask=mask
         )
-        _, pooled_output = roberta_outputs
         pooled_output = self.layer_norm(pooled_output)
         pooled_output = self.dropout(pooled_output)
         logits = self.dense(pooled_output)
