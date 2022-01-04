@@ -54,7 +54,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 100
+    log_interval = 500
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = True
@@ -160,6 +160,14 @@ print(test.shape, submission.shape)
 # ====================================================
 # CV split
 # ====================================================
+
+train_over_0 = train[train['y']>0].reset_index(drop=True)
+len_train_over_0 = len(train_over_0)
+print(len_train_over_0)
+train_0 = train[train['y']==0].sample(n=len_train_over_0, random_state=CFG.seed).reset_index(drop=True)
+
+train = pd.concat([train_over_0, train_0], 0).reset_index(drop=True)
+
 Fold = KFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
 for n, (trn_index, val_index) in enumerate(Fold.split(train, train['y'])):
     train.loc[val_index, 'kfold'] = int(n)
@@ -348,17 +356,15 @@ def calc_cv(model_paths):
         logger.info(get_score(np.array(more_toxic_logits), np.array(less_toxic_logits)))
         y_more.append(np.array(more_output))
         y_less.append(np.array(less_output))
-        idx.append(df['worker'].values)
         torch.cuda.empty_cache()
         
-    y_more = np.concatenate(y_more)
-    y_less = np.concatenate(y_less)
-    idx = np.concatenate(idx)
+    y_more = np.mean(y_more, 0)
+    y_less = np.mean(y_less, 0)
     overall_cv_score = get_score(y_more, y_less)
     logger.info(f'cv score {overall_cv_score}')
     
     oof_df = pd.DataFrame()
-    oof_df['worker'] = idx
+    oof_df['worker'] = df['worker']
     oof_df['more_oof'] = y_more
     oof_df['less_oof'] = y_less
     oof_df.to_csv(OUTPUT_DIR+"oof.csv", index=False)
