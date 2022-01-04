@@ -238,7 +238,7 @@ class RoBERTaBase(nn.Module):
             ids,
             attention_mask=mask
         )
-        _, pooled_output = roberta_outputs[1]
+        _, pooled_output = roberta_outputs
         pooled_output = self.layer_norm(pooled_output)
         pooled_output = self.dropout(pooled_output)
         logits = self.dense(pooled_output)
