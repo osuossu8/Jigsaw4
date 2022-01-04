@@ -24,6 +24,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 from tqdm.auto import tqdm
+from sklearn import metrics
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold, GroupKFold, KFold
 
@@ -48,16 +49,16 @@ class CFG:
     epochs = 3
     folds = [0, 1, 2, 3, 4]
     N_FOLDS = 5
-    LR = 2e-5
+    LR = 1e-4 # 2e-5
     ETA_MIN = 1e-5
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 50
+    log_interval = 100
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = True
-    DEBUG = True # False # True
+    DEBUG = False # True
     margin = 0.5
     tokenizer = AutoTokenizer.from_pretrained(model_name)
  
@@ -139,7 +140,7 @@ class MetricMeter(object):
         self.score = calc_loss(self.y_true, self.y_pred)
        
         return {
-            CFG.EVALUATION : self.score,
+            "score" : self.score,
         }
 
 
@@ -176,7 +177,7 @@ class Jigsaw4Dataset:
         if 'y' in df.columns:
             self.target = df['y'].values 
         else:
-            self.target = torch.tensor(1, dtype=torch.float)
+            self.target = None
 
     def __len__(self):
         return len(self.text)
@@ -193,7 +194,10 @@ class Jigsaw4Dataset:
         ids = inputs["input_ids"]
         mask = inputs["attention_mask"]
         
-        targets = self.target[item]
+        if self.target is None:
+            targets = torch.tensor(1, dtype=torch.float)
+        else:
+            targets = self.target[item]
 
         return {
             "input_ids": torch.tensor(ids, dtype=torch.long),
@@ -414,7 +418,7 @@ for fold in range(5):
     model = model.to(device)
 
     min_loss = 999
-    best_score = 0. # np.inf
+    best_score = np.inf
 
     for epoch in range(CFG.epochs):
         logger.info("Starting {} epoch...".format(epoch+1))
@@ -430,7 +434,7 @@ for fold in range(5):
         logger.info(f'Epoch {epoch+1} - avg_train_loss: {train_loss:.5f}  avg_val_loss: {valid_loss:.5f}  time: {elapsed:.0f}s')
         logger.info(f"Epoch {epoch+1} - train_score:{train_avg['score']:0.5f}  valid_score:{valid_avg['score']:0.5f}")
 
-        if valid_avg['score'] > best_score:
+        if valid_avg['score'] < best_score:
             logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
             torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
             best_score = valid_avg['score']
