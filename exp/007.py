@@ -406,7 +406,7 @@ for fold in range(5):
     trn_df = train[train.kfold != fold].reset_index(drop=True)
     val_df = train[train.kfold == fold].reset_index(drop=True)
 
-    external_df = external[external.kfold != fold].reset_index(drop=True)
+    external_df = external[external.kfold == fold].reset_index(drop=True)
     trn_df = pd.concat([trn_df, external_df]).reset_index(drop=True)
 
     model = RoBERTaBase(CFG.model_name)    
