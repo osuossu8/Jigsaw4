@@ -341,10 +341,10 @@ def calc_cv(model_paths):
         less_output = []
         for b_idx, (data1, data2) in tqdm(enumerate(zip(data_loader_more, data_loader_less))):
             with torch.no_grad():
-                less_inputs = data1['input_ids'].to(device)
-                less_masks = data1['attention_mask'].to(device)
-                more_inputs = data2['input_ids'].to(device)
-                more_masks = data2['attention_mask'].to(device)
+                more_inputs = data1['input_ids'].to(device)
+                more_masks = data1['attention_mask'].to(device)
+                less_inputs = data2['input_ids'].to(device)
+                less_masks = data2['attention_mask'].to(device)
 
                 less_toxic_logits = model(less_inputs, less_masks)
                 more_toxic_logits = model(more_inputs, more_masks)
