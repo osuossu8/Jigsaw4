@@ -17,7 +17,8 @@ print(jigsaw_unintended.shape)
 
 # Give more weight to severe toxic 
 jigsaw_unintended['severe_toxicity'] = jigsaw_unintended.severe_toxicity * 2
-jigsaw_unintended['y'] = (jigsaw_unintended[['toxicity', 'severe_toxicity', 'obscene', 'insult', 'threat', 'identity_attack']].sum(axis=1) ).astype(float)
+# jigsaw_unintended['y'] = (jigsaw_unintended[['toxicity', 'severe_toxicity', 'obscene', 'insult', 'threat', 'identity_attack']].sum(axis=1) ).astype(float)
+jigsaw_unintended['y'] = (jigsaw_unintended[['toxicity', 'severe_toxicity', 'obscene', 'insult', 'threat', 'identity_attack']].sum(axis=1) ).astype(int)
 jigsaw_unintended['y'] = jigsaw_unintended['y']/jigsaw_unintended['y'].max()
 
 jigsaw_unintended = jigsaw_unintended[['comment_text', 'y']].rename(columns={'comment_text': 'text'})
@@ -44,5 +45,5 @@ df_val = df_val[(~df_val.text_x.isna()) | (~df_val.text_y.isna())][['worker', 'l
 print(df_val.shape)
 
 
-jigsaw_unintended.to_csv('input/JigsawUnintendedBias/jigsaw_unintended_bias_toxic_score.csv', index=False)
+jigsaw_unintended.to_csv('input/JigsawUnintendedBias/jigsaw_unintended_bias_toxic_score_int.csv', index=False)
 
