@@ -149,7 +149,7 @@ print(test.shape, submission.shape)
 # ====================================================
 # Fold = GroupKFold(n_splits=CFG.N_FOLDS)
 Fold = StratifiedKFold(n_splits=CFG.N_FOLDS, shuffle=True, random_state=CFG.seed)
-for n, (trn_index, val_index) in enumerate(Fold.split(train, train, train['worker'])):
+for n, (trn_index, val_index) in enumerate(Fold.split(train, train['worker'])):
     train.loc[val_index, 'kfold'] = int(n)
 train['kfold'] = train['kfold'].astype(int)
 
