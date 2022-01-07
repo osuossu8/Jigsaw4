@@ -54,7 +54,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 500
+    log_interval = 100
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = True
@@ -148,7 +148,8 @@ class MetricMeter(object):
 # Data Loading
 # ====================================================
 # train = pd.read_csv('input/validation_data.csv')
-train = pd.read_csv('input/JigsawUnintendedBias/jigsaw_unintended_bias_toxic_score.csv')
+# train = pd.read_csv('input/JigsawUnintendedBias/jigsaw_unintended_bias_toxic_score.csv')
+train = pd.read_csv('input/train_data.csv')
 if CFG.DEBUG:
     train = train.sample(n=100, random_state=CFG.seed).reset_index(drop=True)
 test = pd.read_csv('input/comments_to_score.csv')
@@ -162,7 +163,7 @@ print(test.shape, submission.shape)
 # ====================================================
 
 # train = train[train['y']>0].reset_index(drop=True)
-train = train[train['y']>0.2].reset_index(drop=True)
+# train = train[train['y']>0.2].reset_index(drop=True)
 print(train.shape)
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
@@ -247,8 +248,7 @@ class RMSELoss(torch.nn.Module):
 
 
 def loss_fn(logits, targets):
-    # loss_fct = RMSELoss()
-    loss_fct = torch.nn.BCEWithLogitsLoss()
+    loss_fct = RMSELoss()
     loss = loss_fct(logits, targets)
     return loss
 
