@@ -162,8 +162,8 @@ class Jigsaw4Dataset:
     def __init__(self, df, cfg):
         self.tokenizer = cfg.tokenizer
         self.max_len = cfg.max_len
-        self.less_toxic = df['less_toxic'].fillna("none").values
-        self.more_toxic = df['more_toxic'].fillna("none").values
+        self.less_toxic = df['less_toxic'].values # .fillna("none").values
+        self.more_toxic = df['more_toxic'].values # .fillna("none").values
 
     def __len__(self):
         return len(self.less_toxic)
@@ -171,7 +171,7 @@ class Jigsaw4Dataset:
     def __getitem__(self, item):
 
         less_toxic_inputs = self.tokenizer(
-            str(self.less_toxic[item]), 
+            self.less_toxic[item], 
             max_length=self.max_len, 
             padding="max_length", 
             truncation=True,
@@ -179,7 +179,7 @@ class Jigsaw4Dataset:
         )
         
         more_toxic_inputs = self.tokenizer(
-            str(self.more_toxic[item]), 
+            self.more_toxic[item], 
             max_length=self.max_len, 
             padding="max_length", 
             truncation=True,
@@ -228,11 +228,11 @@ def loss_fn(more_toxic_logits, less_toxic_logits, targets):
     return loss
 
 
-def train_fn(epoch, model, train_data_loader, valid_data_loader, device, optimizer, scheduler, best_score):
+def train_fn(model, data_loader, device, optimizer, scheduler):
     model.train()
     losses = AverageMeter()
     scores = MetricMeter()
-    tk0 = tqdm(train_data_loader, total=len(train_data_loader))
+    tk0 = tqdm(data_loader, total=len(data_loader))
     
     for batch_idx, data in enumerate(tk0):
         optimizer.zero_grad()
@@ -252,23 +252,7 @@ def train_fn(epoch, model, train_data_loader, valid_data_loader, device, optimiz
         losses.update(loss.item(), less_inputs.size(0))
         scores.update(more_toxic_logits, less_toxic_logits)
         tk0.set_postfix(loss=losses.avg)
-
-        if (batch_idx > 0) and (batch_idx % CFG.log_interval == 0):
-            valid_avg, valid_loss = valid_fn(model, valid_data_loader, device)
-
-            logger.info(f"Epoch {epoch+1}, Step {batch_idx} - valid_score:{valid_avg['score']:0.5f}")
-
-            if valid_avg['score'] > best_score:
-                logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
-                torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
-                best_score = valid_avg['score']
-
-            # RuntimeError: cudnn RNN backward can only be called in training mode (_cudnn_rnn_backward_input at /pytorch/aten/src/ATen/native/cudnn/RNN.cpp:877)
-            # https://discuss.pytorch.org/t/pytorch-cudnn-rnn-backward-can-only-be-called-in-training-mode/80080/2
-            # edge case in my code when doing eval on training step
-            model.train() 
-
-    return scores.avg, losses.avg, valid_avg, valid_loss, best_score
+    return scores.avg, losses.avg
 
 
 def valid_fn(model, data_loader, device):
@@ -305,6 +289,7 @@ def calc_cv(model_paths):
         models.append(model)
      
     df = pd.read_csv("input/train_folds_strat.csv")
+    df = df.reset_index()
 
     y_more = []
     y_less = []
@@ -336,7 +321,7 @@ def calc_cv(model_paths):
         logger.info(get_score(np.array(more_toxic_logits), np.array(less_toxic_logits)))
         y_more.append(np.array(more_output))
         y_less.append(np.array(less_output))
-        idx.append(val_df['worker'].values)
+        idx.append(val_df['index'].values)
         torch.cuda.empty_cache()
         
     y_more = np.concatenate(y_more)
@@ -346,7 +331,7 @@ def calc_cv(model_paths):
     logger.info(f'cv score {overall_cv_score}')
     
     oof_df = pd.DataFrame()
-    oof_df['worker'] = idx
+    oof_df['index'] = idx
     oof_df['more_oof'] = y_more
     oof_df['less_oof'] = y_less
     oof_df.to_csv(OUTPUT_DIR+"oof.csv", index=False)
@@ -405,8 +390,8 @@ for fold in range(5):
 
         start_time = time.time()
 
-        train_avg, train_loss, valid_avg, valid_loss, best_score = train_fn(epoch, model, train_dataloader, valid_dataloader, device, optimizer, scheduler, best_score)
-        # train_avg, train_loss = train_fn(model, train_dataloader, device, optimizer, scheduler)
+        # train_avg, train_loss, valid_avg, valid_loss, best_score = train_fn(epoch, model, train_dataloader, valid_dataloader, device, optimizer, scheduler, best_score)
+        train_avg, train_loss = train_fn(model, train_dataloader, device, optimizer, scheduler)
         valid_avg, valid_loss = valid_fn(model, valid_dataloader, device)
 
         elapsed = time.time() - start_time
