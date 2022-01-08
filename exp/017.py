@@ -52,8 +52,8 @@ class CFG:
     ETA_MIN = 1e-6
     WEIGHT_DECAY = 1e-6
     max_len = 128 # 256
-    train_bs = 32 # 64 # 16 * 2
-    valid_bs = 64 # 128 # 32 * 2
+    train_bs = 32 # 64
+    valid_bs = 128
     log_interval = 50
     model_name = 'roberta-base'
     EARLY_STOPPING = True
