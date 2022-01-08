@@ -228,11 +228,11 @@ def loss_fn(more_toxic_logits, less_toxic_logits, targets):
     return loss
 
 
-def train_fn(model, data_loader, device, optimizer, scheduler):
+def train_fn(epoch, model, train_data_loader, valid_data_loader, device, optimizer, scheduler, best_score):
     model.train()
     losses = AverageMeter()
     scores = MetricMeter()
-    tk0 = tqdm(data_loader, total=len(data_loader))
+    tk0 = tqdm(train_data_loader, total=len(train_data_loader))
     
     for batch_idx, data in enumerate(tk0):
         optimizer.zero_grad()
@@ -252,7 +252,23 @@ def train_fn(model, data_loader, device, optimizer, scheduler):
         losses.update(loss.item(), less_inputs.size(0))
         scores.update(more_toxic_logits, less_toxic_logits)
         tk0.set_postfix(loss=losses.avg)
-    return scores.avg, losses.avg
+
+        if (batch_idx > 0) and (batch_idx % CFG.log_interval == 0):
+            valid_avg, valid_loss = valid_fn(model, valid_data_loader, device)
+
+            logger.info(f"Epoch {epoch+1}, Step {batch_idx} - valid_score:{valid_avg['score']:0.5f}")
+
+            if valid_avg['score'] > best_score:
+                logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
+                torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
+                best_score = valid_avg['score']
+
+            # RuntimeError: cudnn RNN backward can only be called in training mode (_cudnn_rnn_backward_input at /pytorch/aten/src/ATen/native/cudnn/RNN.cpp:877)
+            # https://discuss.pytorch.org/t/pytorch-cudnn-rnn-backward-can-only-be-called-in-training-mode/80080/2
+            # edge case in my code when doing eval on training step
+            model.train() 
+
+    return scores.avg, losses.avg, valid_avg, valid_loss, best_score
 
 
 def valid_fn(model, data_loader, device):
@@ -390,8 +406,8 @@ for fold in range(5):
 
         start_time = time.time()
 
-        # train_avg, train_loss, valid_avg, valid_loss, best_score = train_fn(epoch, model, train_dataloader, valid_dataloader, device, optimizer, scheduler, best_score)
-        train_avg, train_loss = train_fn(model, train_dataloader, device, optimizer, scheduler)
+        train_avg, train_loss, valid_avg, valid_loss, best_score = train_fn(epoch, model, train_dataloader, valid_dataloader, device, optimizer, scheduler, best_score)
+        # train_avg, train_loss = train_fn(model, train_dataloader, device, optimizer, scheduler)
         valid_avg, valid_loss = valid_fn(model, valid_dataloader, device)
 
         elapsed = time.time() - start_time
@@ -399,13 +415,10 @@ for fold in range(5):
         logger.info(f'Epoch {epoch+1} - avg_train_loss: {train_loss:.5f}  avg_val_loss: {valid_loss:.5f}  time: {elapsed:.0f}s')
         logger.info(f"Epoch {epoch+1} - train_score:{train_avg['score']:0.5f}  valid_score:{valid_avg['score']:0.5f}")
 
-        if valid_loss < min_loss: 
-        # if valid_avg['score'] > best_score:
-            # logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
-            logger.info(f">>>>>>>> Model Improved From {min_loss} ----> {valid_loss}")
+        if valid_avg['score'] > best_score:
+            logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
             torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
-            # best_score = valid_avg['score']
-            min_loss = valid_loss
+            best_score = valid_avg['score']
 
 
 if len(CFG.folds) == 1:
