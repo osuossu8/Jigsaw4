@@ -288,7 +288,7 @@ def valid_fn(model, data_loader, device):
             losses.update(loss.item(), inputs.size(0))
             scores.update(targets, logits)
             tk0.set_postfix(loss=losses.avg)
-    return scores.avg, losses.
+    return scores.avg, losses.avg
 
 
 def calc_cv(model_paths):
