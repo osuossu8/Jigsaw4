@@ -54,7 +54,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 64 # 16 * 2
     valid_bs = 128 # 32 * 2
-    log_interval = 500
+    log_interval = 50
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = True
