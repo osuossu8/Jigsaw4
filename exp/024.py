@@ -58,6 +58,7 @@ class CFG:
     valid_bs = 128
     log_interval = 150
     model_name = 'roberta-base'
+    EVALUATION = 'RMSE'
     EARLY_STOPPING = True
     DEBUG = False # True
     margin = 0.5
