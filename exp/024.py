@@ -47,7 +47,7 @@ class CFG:
     ######################
     EXP_ID = '024'
     seed = 2021 # 71
-    epochs = 3
+    epochs = 6
     folds = [0, 1, 2, 3, 4]
     N_FOLDS = 5
     LR = 1e-4
@@ -59,7 +59,7 @@ class CFG:
     log_interval = 150
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
-    EARLY_STOPPING = True
+    EARLY_STOPPING = False # True
     DEBUG = False # True
     margin = 0.5
     tokenizer = AutoTokenizer.from_pretrained(model_name)
