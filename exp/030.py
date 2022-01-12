@@ -170,6 +170,7 @@ submission = pd.read_csv('input/sample_submission.csv')
 # train = train[train['y']>0].reset_index(drop=True)
 train = train[train['y']>0.2].reset_index(drop=True)
 print(train.shape)
+print(train['y'].value_counts())
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
 # len_train_over_0 = len(train_over_0)
