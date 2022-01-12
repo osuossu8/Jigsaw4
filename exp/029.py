@@ -38,7 +38,7 @@ from torch.utils.data import DataLoader, Dataset
 import transformers
 from transformers import AutoTokenizer, AutoModel, AutoConfig
 from transformers import get_linear_schedule_with_warmup, get_cosine_schedule_with_warmup
-
+from bs4 import BeautifulSoup
 
 # setting from https://www.kaggle.com/debarshichanda/pytorch-w-b-jigsaw-starter
 class CFG:
