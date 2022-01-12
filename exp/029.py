@@ -198,8 +198,8 @@ print(test.shape, submission.shape)
 # CV split
 # ====================================================
 
-tqdm.pandas()
-train['text'] = train['text'].progress_apply(text_cleaning)
+train['text'] = train['text'].map(text_cleaning)
+print('cleaned')
 
 # train = train[train['y']>0].reset_index(drop=True)
 train = train[train['y']>0.2].reset_index(drop=True)
