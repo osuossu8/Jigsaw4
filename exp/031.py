@@ -198,7 +198,7 @@ train_2 = train_2[train_2['y']>0.2].sample(n=len(train_1), random_state=CFG.seed
 print(train_1.shape)
 print(train_2.shape)
 
-train = pd.concat([train_1, train_2], 1)
+train = pd.concat([train_1, train_2], 0).reset_index(drop=True)
 
 del train_1, train_2; gc.collect()
 
