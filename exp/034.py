@@ -187,6 +187,9 @@ def text_cleaning(text):
 # train = pd.read_csv('input/validation_data.csv')
 # train = pd.read_csv('input/JigsawToxicComment/jigsaw_toxic_comment_toxic_score.csv')
 train = pd.read_csv('input/JigsawToxicComment/jigsaw_toxic_comment_toxic_score_no_weighted.csv')
+train = train[train['y']>0.2].reset_index(drop=True)
+print(train.shape)
+
 if CFG.DEBUG:
     train = train.sample(n=100, random_state=CFG.seed).reset_index(drop=True)
 test = pd.read_csv('input/comments_to_score.csv')
@@ -201,10 +204,6 @@ print(test.shape, submission.shape)
 
 train['text'] = train['text'].map(text_cleaning)
 print('cleaned')
-
-# train = train[train['y']>0].reset_index(drop=True)
-train = train[train['y']>0.2].reset_index(drop=True)
-print(train.shape)
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
 # len_train_over_0 = len(train_over_0)
