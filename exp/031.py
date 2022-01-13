@@ -193,7 +193,7 @@ print(train_1.shape)
 print(train_2.shape)
 
 train_1 = train_1[train_1['y']>0.2].reset_index(drop=True)
-train_2 = train_2[train_2['y']>0.2].sample(n=len(train), random_state=CFG.seed).reset_index(drop=True)
+train_2 = train_2[train_2['y']>0.2].sample(n=len(train_1), random_state=CFG.seed).reset_index(drop=True)
 
 print(train_1.shape)
 print(train_2.shape)
@@ -208,6 +208,8 @@ del train_1, train_2; gc.collect()
 
 train['text'] = train['text'].map(text_cleaning)
 print('cleaned')
+
+print(train['y'].value_counts())
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
 # len_train_over_0 = len(train_over_0)
