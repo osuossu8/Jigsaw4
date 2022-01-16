@@ -198,12 +198,11 @@ print(test.shape, submission.shape)
 # CV split
 # ====================================================
 
-train['text'] = train['text'].map(text_cleaning)
-print('cleaned')
-
-# train = train[train['y']>0].reset_index(drop=True)
 train = train[train['y']>0.2].reset_index(drop=True)
 print(train.shape)
+
+train['text'] = train['text'].map(text_cleaning)
+print('cleaned')
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
 # len_train_over_0 = len(train_over_0)
