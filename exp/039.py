@@ -388,9 +388,12 @@ def calc_cv(model_paths):
                 less_inputs = data2['input_ids'].to(device)
                 less_masks = data2['attention_mask'].to(device)
 
-                less_toxic_logits = model(less_inputs, less_masks)
-                more_toxic_logits = model(more_inputs, more_masks)
+                less_toxic_logits = model(less_inputs, less_masks) # bs, 6
+                more_toxic_logits = model(more_inputs, more_masks) # bs, 6
                 
+                less_toxic_logits = torch.sum(less_toxic_logits, 1)
+                more_toxic_logits = torch.sum(more_toxic_logits, 1)
+ 
                 more_toxic_logits = more_toxic_logits.detach().cpu().numpy().tolist()
                 less_toxic_logits = less_toxic_logits.detach().cpu().numpy().tolist()
                 more_output.extend(more_toxic_logits)
