@@ -233,7 +233,7 @@ class Jigsaw4Dataset:
             self.target = df['y'].values 
         else:
             self.target = None
-        self.numerical_features = df[cfg.numerical_features].values
+        self.numerical_features = df[cfg.numerical_cols].values
 
     def __len__(self):
         return len(self.text)
