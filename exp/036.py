@@ -219,7 +219,7 @@ train.loc[:, "bins"] = pd.cut(
 )
 
 # Fold = KFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
-Fold = model_selection.StratifiedKFold(n_splits=CFG.N_FOLDS, shuffle=True, random_state=42)
+Fold = StratifiedKFold(n_splits=CFG.N_FOLDS, shuffle=True, random_state=42)
 for n, (trn_index, val_index) in enumerate(Fold.split(train, train['bins'].values)):
     train.loc[val_index, 'kfold'] = int(n)
 train['kfold'] = train['kfold'].astype(int)
