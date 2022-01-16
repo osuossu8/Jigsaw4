@@ -285,7 +285,7 @@ class RoBERTaBase(nn.Module):
             ids,
             attention_mask=mask
         )
-        x1 = self.l0(self.dropout(roberta_outputs[1])
+        x1 = self.dropout(roberta_outputs[1])
         x2 = self.process_num(numerical_features)
         x = torch.cat([x1, x2], 1)
 
