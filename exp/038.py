@@ -47,7 +47,7 @@ class CFG:
     ######################
     EXP_ID = '038'
     seed = 2021 # 71
-    epochs = 6
+    epochs = 4
     folds = [0, 1, 2, 3, 4]
     N_FOLDS = 5
     LR = 1e-4
@@ -58,17 +58,11 @@ class CFG:
     valid_bs = 128
     log_interval = 150
     model_name = 'roberta-base'
-    EVALUATION = 'RMSE'
+    EVALUATION = 'MAE' # 'RMSE'
     EARLY_STOPPING = False # True
     DEBUG = False # True
     margin = 0.5
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    numerical_cols = [
-       'text_num_chars', 'text_num_capitals', 'text_caps_vs_length',
-       'text_num_exclamation_marks', 'text_num_question_marks',
-       'text_num_punctuation', 'text_num_symbols', 'text_num_words',
-       'text_num_unique_words', 'text_words_vs_unique'
-    ]
  
 
 # ====================================================
@@ -100,6 +94,8 @@ def calc_loss(y_true, y_pred):
         return  np.sqrt(metrics.mean_squared_error(y_true, y_pred))
     elif CFG.EVALUATION == 'AUC':
         return metrics.roc_auc_score(np.array(y_true), np.array(y_pred))
+    elif CFG.EVALUATION == 'MAE':
+        return  metrics.mean_absolute_error(y_true, y_pred)
     else:
         raise NotImplementedError()
 
@@ -206,10 +202,10 @@ print(test.shape, submission.shape)
 
 # train = train[train['y']>0].reset_index(drop=True)
 train = train[train['y']>0.2].reset_index(drop=True)
+print(train.shape)
 
 train['text'] = train['text'].map(text_cleaning)
 print('cleaned')
-print(train.shape)
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
 # len_train_over_0 = len(train_over_0)
@@ -233,7 +229,6 @@ class Jigsaw4Dataset:
             self.target = df['y'].values 
         else:
             self.target = None
-        self.numerical_features = df[cfg.numerical_cols].values
 
     def __len__(self):
         return len(self.text)
@@ -256,13 +251,10 @@ class Jigsaw4Dataset:
         else:
             targets = self.target[item]
 
-        numerical_features = self.numerical_features[item]
-
         return {
             "input_ids": torch.tensor(ids, dtype=torch.long),
             "attention_mask": torch.tensor(mask, dtype=torch.long),
             "targets" : torch.tensor(targets, dtype=torch.float32),
-            "numerical_features" : torch.tensor(numerical_features, dtype=torch.float32),
         }
 
 
@@ -272,24 +264,15 @@ class RoBERTaBase(nn.Module):
         self.in_features = 768
         self.roberta = AutoModel.from_pretrained(model_path)
         self.dropout = nn.Dropout(0.2)
-        self.process_num = nn.Sequential(
-            nn.Linear(10, 8),
-            nn.BatchNorm1d(8),
-            nn.PReLU(),
-            nn.Dropout(0.1),
-        )
-        self.l0 = nn.Linear(self.in_features+8, 1)
+        self.l0 = nn.Linear(self.in_features, 1)
 
-    def forward(self, ids, mask, numerical_features):
+    def forward(self, ids, mask):
         roberta_outputs = self.roberta(
             ids,
             attention_mask=mask
         )
-        x1 = self.dropout(roberta_outputs[1])
-        x2 = self.process_num(numerical_features)
-        x = torch.cat([x1, x2], 1)
-
-        logits = torch.sigmoid(self.l0(x))
+        x = roberta_outputs[1]
+        logits = torch.sigmoid(self.l0(self.dropout(x)))
         return logits.squeeze(-1)
 
 
@@ -304,7 +287,8 @@ class RMSELoss(torch.nn.Module):
 
 
 def loss_fn(logits, targets):
-    loss_fct = RMSELoss() # torch.nn.BCEWithLogitsLoss()
+    # loss_fct = RMSELoss() # torch.nn.BCEWithLogitsLoss()
+    loss_fct = nn.L1Loss()
     loss = loss_fct(logits, targets)
     return loss
 
@@ -320,8 +304,7 @@ def train_fn(model, data_loader, device, optimizer, scheduler):
         inputs = data['input_ids'].to(device)
         masks = data['attention_mask'].to(device)
         targets = data['targets'].to(device)
-        numerical_features = data['numerical_features'].to(device)
-        logits = model(inputs, masks, numerical_features)
+        logits = model(inputs, masks)
         loss = loss_fn(logits, targets)
         loss.backward()
         optimizer.step()
@@ -343,8 +326,7 @@ def valid_fn(model, data_loader, device):
             inputs = data['input_ids'].to(device)
             masks = data['attention_mask'].to(device)
             targets = data['targets'].to(device)
-            numerical_features = data['numerical_features'].to(device)
-            logits = model(inputs, masks, numerical_features)
+            logits = model(inputs, masks)
             loss = loss_fn(logits, targets)
             losses.update(loss.item(), inputs.size(0))
             scores.update(targets, logits)
@@ -361,9 +343,6 @@ def calc_cv(model_paths):
 
     df_more.columns = ['index', 'text']
     df_less.columns = ['index', 'text']
-
-    df_more = get_sentence_features(df_more, 'text')
-    df_less = get_sentence_features(df_less, 'text')
 
     y_more = []
     y_less = []
@@ -391,11 +370,9 @@ def calc_cv(model_paths):
                 more_masks = data1['attention_mask'].to(device)
                 less_inputs = data2['input_ids'].to(device)
                 less_masks = data2['attention_mask'].to(device)
-                more_numerical_features = data1['numerical_features'].to(device)
-                less_numerical_features = data2['numerical_features'].to(device)
 
-                less_toxic_logits = model(less_inputs, less_masks, less_numerical_features)
-                more_toxic_logits = model(more_inputs, more_masks, more_numerical_features)
+                less_toxic_logits = model(less_inputs, less_masks)
+                more_toxic_logits = model(more_inputs, more_masks)
                 
                 more_toxic_logits = more_toxic_logits.detach().cpu().numpy().tolist()
                 less_toxic_logits = less_toxic_logits.detach().cpu().numpy().tolist()
@@ -433,23 +410,6 @@ def init_logger(log_file='train.log'):
 
 
 logger = init_logger(log_file='log/' + f"{CFG.EXP_ID}.log")
-
-
-def get_sentence_features(train, col):
-    train[col + '_num_chars'] = train[col].apply(len)
-    train[col + '_num_capitals'] = train[col].apply(lambda x: sum(1 for c in x if c.isupper()))
-    train[col + '_caps_vs_length'] = train.apply(lambda row: row[col + '_num_chars'] / (row[col + '_num_capitals']+1e-5), axis=1)
-    train[col + '_num_exclamation_marks'] = train[col].apply(lambda x: x.count('!'))
-    train[col + '_num_question_marks'] = train[col].apply(lambda x: x.count('?'))
-    train[col + '_num_punctuation'] = train[col].apply(lambda x: sum(x.count(w) for w in '.,;:'))
-    train[col + '_num_symbols'] = train[col].apply(lambda x: sum(x.count(w) for w in '*&$%'))
-    train[col + '_num_words'] = train[col].apply(lambda x: len(x.split()))
-    train[col + '_num_unique_words'] = train[col].apply(lambda comment: len(set(w for w in comment.split())))
-    train[col + '_words_vs_unique'] = train[col + '_num_unique_words'] / train[col + '_num_words'] 
-    return train
-
-
-train = get_sentence_features(train, 'text')
 
 
 # main loop
