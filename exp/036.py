@@ -216,7 +216,7 @@ num_bins = int(np.floor(1 + np.log2(len(train))))
     
 # bin targets
 train.loc[:, "bins"] = pd.cut(
-        train['Pawpularity'], bins=num_bins, labels=False
+        train['y'], bins=num_bins, labels=False
 )
 
 # Fold = KFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
