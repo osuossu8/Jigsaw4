@@ -198,7 +198,7 @@ train['y'] = (train[['toxicity', 'severe_toxicity', 'obscene', 'sexual_explicit'
        'buddhist', 'atheist', 'other_religion', 'black', 'white', 'asian',
        'latino', 'other_race_or_ethnicity', 'physical_disability',
        'intellectual_or_learning_disability', 'psychiatric_or_mental_illness',
-       'other_disability']].sum(axis=1) ).astype(int)
+       'other_disability']].sum(axis=1) ) # .astype(int)
 
 train['y'] = train['y']/train['y'].max()
 
