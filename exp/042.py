@@ -55,7 +55,7 @@ class CFG:
     WEIGHT_DECAY = 1e-6
     max_len = 128 # 256
     train_bs = 32 # 64
-    valid_bs = 128
+    valid_bs = 64 # 128
     log_interval = 150
     model_name = 'roberta-large' # 'roberta-base'
     EVALUATION = 'RMSE'
