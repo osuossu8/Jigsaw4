@@ -56,7 +56,7 @@ class CFG:
     max_len = 128 # 256
     train_bs = 32 # 64
     valid_bs = 128
-    log_interval = 150
+    log_interval = 400
     model_name = 'roberta-base'
     EVALUATION = 'RMSE'
     EARLY_STOPPING = False # True
@@ -229,10 +229,19 @@ print('cleaned')
 
 # train = pd.concat([train_over_0, train_0], 0).reset_index(drop=True)
 
-Fold = KFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
-for n, (trn_index, val_index) in enumerate(Fold.split(train, train['y'])):
+num_bins = int(np.floor(1 + np.log2(len(train))))
+    
+# bin targets
+train.loc[:, "bins"] = pd.cut(
+        train["y"], bins=num_bins, labels=False
+)
+
+Fold = StratifiedKFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
+for n, (trn_index, val_index) in enumerate(Fold.split(train, train['bins'])):
     train.loc[val_index, 'kfold'] = int(n)
 train['kfold'] = train['kfold'].astype(int)
+
+del train['bins']; gc.collect()
 
 
 class Jigsaw4Dataset:
@@ -484,13 +493,13 @@ for fold in range(5):
 
         elapsed = time.time() - start_time
         
-        logger.info(f'Epoch {epoch+1} - avg_train_loss: {train_loss:.5f}  avg_val_loss: {valid_loss:.5f}  time: {elapsed:.0f}s')
-        logger.info(f"Epoch {epoch+1} - train_score:{train_avg['score']:0.5f}  valid_score:{valid_avg['score']:0.5f}")
+        # logger.info(f'Epoch {epoch+1} - avg_train_loss: {train_loss:.5f}  avg_val_loss: {valid_loss:.5f}  time: {elapsed:.0f}s')
+        # logger.info(f"Epoch {epoch+1} - train_score:{train_avg['score']:0.5f}  valid_score:{valid_avg['score']:0.5f}")
 
-        if valid_avg['score'] < best_score:
-            logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
-            torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
-            best_score = valid_avg['score']
+        # if valid_avg['score'] < best_score:
+        #     logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
+        #     torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
+        #     best_score = valid_avg['score']
 
 
 if len(CFG.folds) == 1:
