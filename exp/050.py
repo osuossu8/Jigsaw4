@@ -268,7 +268,7 @@ class RoBERTaBase(nn.Module):
             ids,
             attention_mask=mask
         )
-        x = roberta_outputs[1]
+        x = roberta_outputs['last_hidden_state'][:, 0, :]
         logits = torch.sigmoid(self.l0(self.dropout(x)))
         return logits.squeeze(-1)
 
