@@ -351,7 +351,7 @@ def train_fn(epoch, model, train_data_loader, valid_data_loader, device, optimiz
             # edge case in my code when doing eval on training step
             model.train() 
 
-    return scores.avg, losses.avg, valid_avg, valid_loss, 
+    return scores.avg, losses.avg, valid_avg, valid_loss, best_score
 
 
 def valid_fn(model, data_loader, device):
