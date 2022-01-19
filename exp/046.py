@@ -216,7 +216,7 @@ print(test.shape, submission.shape)
 # ====================================================
 
 # train = train[train['y']>0.2].reset_index(drop=True)
-train = train[train['y']>0].reset_index(drop=True)
+train = train[train['y']>0.1].reset_index(drop=True)
 print(train.shape)
 print(train['y'].value_counts())
 
