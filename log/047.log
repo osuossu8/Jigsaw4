@@ -1,0 +1,138 @@
+========================================================================================================================
+Fold 0 Training
+========================================================================================================================
+Starting 1 epoch...
+Epoch 1, Step 400 - valid_score:0.07131
+>>>>>>>> Model Improved From inf ----> 0.07130638608649763
+Epoch 1, Step 800 - valid_score:0.07044
+>>>>>>>> Model Improved From 0.07130638608649763 ----> 0.070435709957619
+Epoch 1, Step 1200 - valid_score:0.07060
+Epoch 1, Step 1600 - valid_score:0.07120
+Starting 2 epoch...
+Epoch 2, Step 400 - valid_score:0.07303
+Epoch 2, Step 800 - valid_score:0.07165
+Epoch 2, Step 1200 - valid_score:0.07167
+Epoch 2, Step 1600 - valid_score:0.07178
+Starting 3 epoch...
+Epoch 3, Step 400 - valid_score:0.07059
+Epoch 3, Step 800 - valid_score:0.07107
+Epoch 3, Step 1200 - valid_score:0.07256
+Epoch 3, Step 1600 - valid_score:0.07127
+Starting 4 epoch...
+Epoch 4, Step 400 - valid_score:0.07072
+Epoch 4, Step 800 - valid_score:0.07083
+Epoch 4, Step 1200 - valid_score:0.07297
+Epoch 4, Step 1600 - valid_score:0.07152
+========================================================================================================================
+Fold 1 Training
+========================================================================================================================
+Starting 1 epoch...
+Epoch 1, Step 400 - valid_score:0.05527
+>>>>>>>> Model Improved From inf ----> 0.05526759584749315
+Epoch 1, Step 800 - valid_score:0.05841
+Epoch 1, Step 1200 - valid_score:0.05484
+>>>>>>>> Model Improved From 0.05526759584749315 ----> 0.05483686890067796
+Epoch 1, Step 1600 - valid_score:0.05040
+>>>>>>>> Model Improved From 0.05483686890067796 ----> 0.05039778032401401
+Starting 2 epoch...
+Epoch 2, Step 400 - valid_score:0.07096
+Epoch 2, Step 800 - valid_score:0.07064
+Epoch 2, Step 1200 - valid_score:0.07150
+Epoch 2, Step 1600 - valid_score:0.07081
+Starting 3 epoch...
+Epoch 3, Step 400 - valid_score:0.07057
+Epoch 3, Step 800 - valid_score:0.07143
+Epoch 3, Step 1200 - valid_score:0.07100
+Epoch 3, Step 1600 - valid_score:0.07100
+Starting 4 epoch...
+Epoch 4, Step 400 - valid_score:0.07055
+Epoch 4, Step 800 - valid_score:0.07041
+Epoch 4, Step 1200 - valid_score:0.07038
+Epoch 4, Step 1600 - valid_score:0.07078
+========================================================================================================================
+Fold 2 Training
+========================================================================================================================
+Starting 1 epoch...
+Epoch 1, Step 400 - valid_score:0.05513
+>>>>>>>> Model Improved From inf ----> 0.055130830116770814
+Epoch 1, Step 800 - valid_score:0.06244
+Epoch 1, Step 1200 - valid_score:0.07113
+Epoch 1, Step 1600 - valid_score:0.07017
+Starting 2 epoch...
+Epoch 2, Step 400 - valid_score:0.07110
+Epoch 2, Step 800 - valid_score:0.07117
+Epoch 2, Step 1200 - valid_score:0.07055
+Epoch 2, Step 1600 - valid_score:0.07017
+Starting 3 epoch...
+Epoch 3, Step 400 - valid_score:0.07040
+Epoch 3, Step 800 - valid_score:0.07090
+Epoch 3, Step 1200 - valid_score:0.07066
+Epoch 3, Step 1600 - valid_score:0.07330
+Starting 4 epoch...
+Epoch 4, Step 400 - valid_score:0.07256
+Epoch 4, Step 800 - valid_score:0.07202
+Epoch 4, Step 1200 - valid_score:0.07180
+Epoch 4, Step 1600 - valid_score:0.07046
+========================================================================================================================
+Fold 3 Training
+========================================================================================================================
+Starting 1 epoch...
+Epoch 1, Step 400 - valid_score:0.05763
+>>>>>>>> Model Improved From inf ----> 0.05762946838142983
+Epoch 1, Step 800 - valid_score:0.05846
+Epoch 1, Step 1200 - valid_score:0.05432
+>>>>>>>> Model Improved From 0.05762946838142983 ----> 0.05431571290896173
+Epoch 1, Step 1600 - valid_score:0.05183
+>>>>>>>> Model Improved From 0.05431571290896173 ----> 0.05183222276865031
+Starting 2 epoch...
+Epoch 2, Step 400 - valid_score:0.05665
+Epoch 2, Step 800 - valid_score:0.05069
+>>>>>>>> Model Improved From 0.05183222276865031 ----> 0.050689060987582385
+Epoch 2, Step 1200 - valid_score:0.05163
+Epoch 2, Step 1600 - valid_score:0.05057
+>>>>>>>> Model Improved From 0.050689060987582385 ----> 0.050567860039942715
+Starting 3 epoch...
+Epoch 3, Step 400 - valid_score:0.05217
+Epoch 3, Step 800 - valid_score:0.05593
+Epoch 3, Step 1200 - valid_score:0.05010
+>>>>>>>> Model Improved From 0.050567860039942715 ----> 0.050102394850595304
+Epoch 3, Step 1600 - valid_score:0.05958
+Starting 4 epoch...
+Epoch 4, Step 400 - valid_score:0.07073
+Epoch 4, Step 800 - valid_score:0.07158
+Epoch 4, Step 1200 - valid_score:0.07230
+Epoch 4, Step 1600 - valid_score:0.05536
+========================================================================================================================
+Fold 4 Training
+========================================================================================================================
+Starting 1 epoch...
+Epoch 1, Step 400 - valid_score:0.05632
+>>>>>>>> Model Improved From inf ----> 0.05632400478781439
+Epoch 1, Step 800 - valid_score:0.06231
+Epoch 1, Step 1200 - valid_score:0.05829
+Epoch 1, Step 1600 - valid_score:0.05155
+>>>>>>>> Model Improved From 0.05632400478781439 ----> 0.051547312597077996
+Starting 2 epoch...
+Epoch 2, Step 400 - valid_score:0.05635
+Epoch 2, Step 800 - valid_score:0.05219
+Epoch 2, Step 1200 - valid_score:0.05254
+Epoch 2, Step 1600 - valid_score:0.05284
+Starting 3 epoch...
+Epoch 3, Step 400 - valid_score:0.05333
+Epoch 3, Step 800 - valid_score:0.05381
+Epoch 3, Step 1200 - valid_score:0.05048
+>>>>>>>> Model Improved From 0.051547312597077996 ----> 0.05048219610777962
+Epoch 3, Step 1600 - valid_score:0.05325
+Starting 4 epoch...
+Epoch 4, Step 400 - valid_score:0.05028
+>>>>>>>> Model Improved From 0.05048219610777962 ----> 0.05027677135496675
+Epoch 4, Step 800 - valid_score:0.05081
+Epoch 4, Step 1200 - valid_score:0.05124
+Epoch 4, Step 1600 - valid_score:0.05011
+>>>>>>>> Model Improved From 0.05027677135496675 ----> 0.05011054804018398
+0.39285714285714285
+0.6428571428571429
+0.7857142857142857
+0.6785714285714286
+0.7142857142857143
+cv score 0.6604556928391125
