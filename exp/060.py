@@ -215,7 +215,22 @@ print(test.shape, submission.shape)
 # CV split
 # ====================================================
 
-train = train[train['y']>0].reset_index(drop=True)
+train = train[train['y']>2].reset_index(drop=True)
+
+def new_y(x):
+    if x == 3:
+        return 0
+    elif x == 4:
+        return 1
+    elif x == 5:
+        return 2
+    elif x == 6:
+        return 3
+    else:
+        return 4   
+
+train['y'] = train['y'].map(new_y)
+
 print(train.shape)
 print(train['y'].value_counts())
 
@@ -262,9 +277,10 @@ class Jigsaw4Dataset:
         mask = inputs["attention_mask"]
         
         if self.target is None:
-            targets = torch.tensor(1, dtype=torch.float)
+            targets = np.zeros(5, dtype=float)
         else:
-            targets = self.target[item]
+            targets = np.zeros(5, dtype=float)
+            targets[self.target[item]] = 1.0
 
         return {
             "input_ids": torch.tensor(ids, dtype=torch.long),
@@ -279,7 +295,7 @@ class RoBERTaBase(nn.Module):
         self.in_features = 768
         self.roberta = AutoModel.from_pretrained(model_path)
         self.dropout = nn.Dropout(0.2)
-        self.l0 = nn.Linear(self.in_features, 10)
+        self.l0 = nn.Linear(self.in_features, 5)
 
     def forward(self, ids, mask):
         roberta_outputs = self.roberta(
