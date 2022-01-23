@@ -490,7 +490,7 @@ for fold in range(5):
     model = model.to(device)
 
     min_loss = 999
-    best_score = np.inf
+    best_score = -np.inf
 
     for epoch in range(CFG.epochs):
         logger.info("Starting {} epoch...".format(epoch+1))
