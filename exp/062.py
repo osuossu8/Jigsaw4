@@ -207,7 +207,10 @@ def rm_spaces(x):
 # Data Loading
 # ====================================================
 # train = pd.read_csv('input/validation_data.csv')
-train = pd.read_csv('input/RudditJigsaw/Dataset/ruddit_with_text.csv')
+rud_df = pd.read_csv('input/RudditJigsaw/Dataset/ruddit_with_text.csv')
+rud_df['y'] = rud_df["offensiveness_score"] 
+train = rud_df[['txt', 'y']].rename(columns={'txt': 'text'})
+
 if CFG.DEBUG:
     train = train.sample(n=100, random_state=CFG.seed).reset_index(drop=True)
 test = pd.read_csv('input/comments_to_score.csv')
