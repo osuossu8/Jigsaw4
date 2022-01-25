@@ -224,7 +224,7 @@ print(test.shape, submission.shape)
 # ====================================================
 
 train['text'] = train['text'].map(text_cleaning)
-train['text'] = train['text'](lambda x: rm_spaces(x).strip())
+train['text'] = train['text'].map(lambda x: rm_spaces(x).strip())
 print('cleaned')
 
 # train_over_0 = train[train['y']>0].reset_index(drop=True)
