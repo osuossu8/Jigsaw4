@@ -199,6 +199,7 @@ df['y'] = df['y']/df['y'].max()
 
 print(df['y'].value_counts())
 
+train = df[['text', 'y']].copy()
 
 if CFG.DEBUG:
     train = train.sample(n=100, random_state=CFG.seed).reset_index(drop=True)
