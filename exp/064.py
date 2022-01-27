@@ -198,7 +198,7 @@ print(test.shape, submission.shape)
 # CV split
 # ====================================================
 
-train['y'] = train['hate_speech_score'].copy()
+train['y'] = train['hate_speech_score'].copy().astype(int)
 train['y'] = train['y']/train['y'].max()
 
 train = train[train['y']>0].reset_index(drop=True)
