@@ -202,6 +202,7 @@ train['y'] = train['hate_speech_score'].copy()
 
 # train = train[train['y']>0.2].reset_index(drop=True)
 print(train.shape)
+print(train['y'].value_counts())
 
 train['text'] = train['text'].map(text_cleaning)
 print('cleaned')
