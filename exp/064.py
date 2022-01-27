@@ -185,22 +185,7 @@ def text_cleaning(text):
 # Data Loading
 # ====================================================
 # train = pd.read_csv('input/validation_data.csv')
-# train = pd.read_csv('input/JigsawToxicComment/jigsaw_toxic_comment_toxic_score.csv')
-df = pd.read_csv('input/external/jig1_no_jig4_dup_df.csv')
-
-cat_mtpl = {'obscene': 0.16, 'toxic': 0.32, 'threat': 1.5, 'insult': 0.64, 'severe_toxic': 1.5, 'identity_hate': 1.5}
-
-df['y'] = 0
-for k, v in cat_mtpl.items():
-  df['y'] += df[k] * v
-
-df['y'] = df['y'].astype(int)
-df['y'] = df['y']/df['y'].max()
-
-print(df['y'].value_counts())
-
-train = df[['text', 'y']].copy()
-
+train = pd.read_csv('input/measuring_hate_speech.csv')
 if CFG.DEBUG:
     train = train.sample(n=100, random_state=CFG.seed).reset_index(drop=True)
 test = pd.read_csv('input/comments_to_score.csv')
@@ -213,7 +198,8 @@ print(test.shape, submission.shape)
 # CV split
 # ====================================================
 
-train = train[train['y']>0].reset_index(drop=True)
+train['y'] = train['hate_speech_score'].copy()
+
 # train = train[train['y']>0.2].reset_index(drop=True)
 print(train.shape)
 
