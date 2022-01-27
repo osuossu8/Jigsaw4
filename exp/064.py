@@ -213,8 +213,9 @@ print('cleaned')
 
 # train = pd.concat([train_over_0, train_0], 0).reset_index(drop=True)
 
-Fold = KFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
-for n, (trn_index, val_index) in enumerate(Fold.split(train, train['y'])):
+# Fold = KFold(n_splits=CFG.N_FOLDS, random_state=42, shuffle=True)
+Fold = StratifiedKFold(n_splits=CFG.N_FOLDS, shuffle=True, random_state=CFG.seed)
+for n, (trn_index, val_index) in enumerate(Fold.split(train, train['annotator_id'])):
     train.loc[val_index, 'kfold'] = int(n)
 train['kfold'] = train['kfold'].astype(int)
 
