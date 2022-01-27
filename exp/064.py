@@ -201,7 +201,7 @@ print(test.shape, submission.shape)
 train['y'] = train['hate_speech_score'].copy()
 train['y'] = train['y']/train['y'].max()
 
-# train = train[train['y']>0].reset_index(drop=True)
+train = train[train['y']>0].reset_index(drop=True)
 print(train.shape)
 print(train['y'].value_counts())
 
