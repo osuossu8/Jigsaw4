@@ -51,9 +51,9 @@ class CFG:
     LR = 1e-4
     ETA_MIN = 1e-6
     WEIGHT_DECAY = 1e-6
-    max_len = 128 # 256
-    train_bs = 32 # 64
-    valid_bs = 128
+    max_len = 224 # 128 # 256
+    train_bs = 16 # 32 # 64
+    valid_bs = 64 # 128
     log_interval = 150
     model_name = 'distilbert-base-uncased' # 'roberta-base'
     EARLY_STOPPING = True
