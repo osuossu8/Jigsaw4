@@ -45,15 +45,15 @@ class CFG:
     ######################
     EXP_ID = '067'
     seed = 2021
-    epochs = 4
+    epochs = 3
     folds = [0, 1, 2, 3, 4]
     N_FOLDS = 5
     LR = 1e-4
     ETA_MIN = 1e-6
     WEIGHT_DECAY = 1e-6
-    max_len = 224 # 128 # 256
-    train_bs = 16 # 32 # 64
-    valid_bs = 64 # 128
+    max_len = 128 # 256
+    train_bs = 32 # 64
+    valid_bs = 128
     log_interval = 150
     model_name = 'distilroberta-base' # 'distilbert-base-uncased' # 'roberta-base'
     EARLY_STOPPING = True
