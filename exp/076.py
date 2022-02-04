@@ -146,6 +146,8 @@ print(test.shape, submission.shape)
 
 external = pd.read_csv('input/jigsaw4_additional_pairs_from_jigsaw2.csv')
 print(external.shape)
+external = external.sample(n=10000, random_state=CFG.seed).reset_index(drop=True)
+print(external.shape)
 
 # ====================================================
 # CV split
