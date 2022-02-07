@@ -233,7 +233,7 @@ class RoBERTaBase(nn.Module):
             attention_mask=mask,
             output_hidden_states=False
         )
-        x = roberta_outputs[1]
+        x = roberta_outputs['last_hidden_state'][:, 0, :]
         logits = self.l0(self.dropout(x))
         return logits.squeeze(-1)
 
