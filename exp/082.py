@@ -55,7 +55,7 @@ class CFG:
     train_bs = 64 # 32
     valid_bs = 128
     log_interval = 150
-    model_name = 'google/electra-large-discriminator'
+    model_name = 'google/electra-base-discriminator'
     EARLY_STOPPING = True
     DEBUG = False # True
     margin = 0.5
