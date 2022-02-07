@@ -304,15 +304,14 @@ def calc_cv(model_paths):
         model.eval()
         models.append(model)
      
-    # df = pd.read_csv("input/train_folds_strat.csv")
-    # df = df.reset_index()
-
-    val_df = pd.read_csv("input/train_folds_strat.csv").reset_index()
+    df = pd.read_csv("input/train_folds_strat.csv")
+    df = df.reset_index()
 
     y_more = []
     y_less = []
+    idx = []
     for fold, model in enumerate(models):
-        # val_df = df[df.kfold == fold].reset_index(drop=True)
+        val_df = df[df.kfold == fold].reset_index(drop=True)
 
         dataset = Jigsaw4Dataset(df=val_df, cfg=CFG)
         data_loader = torch.utils.data.DataLoader(
@@ -338,15 +337,17 @@ def calc_cv(model_paths):
         logger.info(get_score(np.array(more_toxic_logits), np.array(less_toxic_logits)))
         y_more.append(np.array(more_output))
         y_less.append(np.array(less_output))
+        idx.append(val_df['index'].values)
         torch.cuda.empty_cache()
-        
-    y_more = np.mean(y_more, 0)
-    y_less = np.mean(y_less, 0)
+
+    y_more = np.concatenate(y_more)
+    y_less = np.concatenate(y_less)
+    idx = np.concatenate(idx)        
     overall_cv_score = get_score(y_more, y_less)
     logger.info(f'cv score {overall_cv_score}')
     
     oof_df = pd.DataFrame()
-    oof_df['index'] = val_df['index'].values
+    oof_df['index'] = idx
     oof_df['more_oof'] = y_more
     oof_df['less_oof'] = y_less
     oof_df.to_csv(OUTPUT_DIR+"oof.csv", index=False)
@@ -368,7 +369,7 @@ def init_logger(log_file='train.log'):
 
 logger = init_logger(log_file='log/' + f"{CFG.EXP_ID}.log")
 
-
+"""
 # main loop
 for fold in range(5):
     if fold not in CFG.folds:
@@ -432,7 +433,7 @@ for fold in range(5):
             logger.info(f">>>>>>>> Model Improved From {best_score} ----> {valid_avg['score']}")
             torch.save(model.state_dict(), OUTPUT_DIR+f'fold-{fold}.bin')
             best_score = valid_avg['score']
-
+"""
 
 if len(CFG.folds) == 1:
     pass
